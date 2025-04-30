@@ -61,3 +61,9 @@ def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
 
+class InsuranceSystem:
+    def __init__(self):
+        self.conn = sqlite3.connect('insurance.db')
+        main_db()  
+    
+   
