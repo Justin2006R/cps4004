@@ -55,3 +55,22 @@ class InsuranceSystem:
         ''', (status, claim_id))
         self.conn.commit()
         return cursor.rowcount > 0
+
+    def add_policy(self, customer_id, policy_type, premium):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            INSERT INTO Policies (CustomerID, PolicyType, PremiumAmount)
+            VALUES (?, ?, ?)
+        ''', (customer_id, policy_type, premium))
+        self.conn.commit()
+        return cursor.lastrowid
+
+    def get_policies(self, customer_id):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            SELECT * FROM Policies WHERE CustomerID = ?
+        ''', (customer_id,))
+        return cursor.fetchall()
+
+    def close(self):
+        self.conn.close()
