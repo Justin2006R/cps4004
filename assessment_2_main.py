@@ -5,6 +5,7 @@ cursor = conn.cursor()
 
 class InsuranceSystem:
              
+    def create_tables(self):    
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Customers (
                 CustomerID INTEGER PRIMARY KEY,
@@ -32,5 +33,25 @@ class InsuranceSystem:
                 FOREIGN KEY (PolicyID) REFERENCES Policies(PolicyID)
             )
         ''')
-        
 
+        self.conn.commit()
+        
+    def submit_claim(self, policy_id, amount):
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute('''
+                INSERT INTO Claims (PolicyID, ClaimAmount)
+                VALUES (?, ?)
+            ''', (policy_id, amount))
+            self.conn.commit()
+            return True
+        except sqlite3.Error:
+            return False
+
+    def update_claim_status(self, claim_id, status):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            UPDATE Claims SET Status = ? WHERE ClaimID = ?
+        ''', (status, claim_id))
+        self.conn.commit()
+        return cursor.rowcount > 0
