@@ -80,3 +80,34 @@ class InsuranceSystem:
         ''', (customer_id,))
         return cursor.fetchall()
 
+system = InsuranceSystem()
+    
+cursor.execute(
+            "INSERT INTO Branches (BranchName, Location) VALUES (?, ?)",
+            ("London", "Twickenham, St Mary's University")
+        )
+branch_id = cursor.lastrowid
+        
+cursor.execute(
+            "INSERT INTO Customers (Name, Email, BranchID) VALUES (?, ?, ?)",
+            ("Justin Roberts", "JustRob@example.com", branch_id)
+        )
+customer_id = cursor.lastrowid
+            
+policy_id = system.add_policy(
+            customer_id=customer_id,
+            policy_type="Auto",
+            premium=1000.00,
+            start_date="03-05-2025",
+            end_date="03-05-2026"
+        )
+print(f"Added policy ID: {policy_id}")
+        
+system.submit_claim(
+            policy_id=policy_id,
+            claim_number="Claim#001",
+            amount=2500.00,
+            description="Damaged"
+        )
+         
+conn.commit
